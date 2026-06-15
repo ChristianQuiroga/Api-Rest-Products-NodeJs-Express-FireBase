@@ -3,7 +3,7 @@ import cors from "cors";
 import bodyParser from "body-parser"; // Middleware para parsear JSON en las solicitudes
 import dotenv from "dotenv"; // Cargar variables de entorno desde el archivo .env
 
-import productRouter from "./src/routers/products.router.js"; // Importar el controlador de productos
+import productsRouter from "./src/routers/products.router.js"; // Importar el controlador de productos
 
 dotenv.config(); // Cargar las variables de entorno
 
@@ -30,7 +30,7 @@ app.get("/", (req, res) => {
 });
 
 // Prefijo para las rutas de productos
-app.use("/api/products", productRouter);
+app.use("/api/products", productsRouter);
 
 // Middleware para manejar rutas no encontradas
 app.use((req, res) => {
