@@ -1,4 +1,5 @@
-import { db } from "./data/data.js";
+//import { db } from "./data/data.js";
+import { db } from "../config/firebase.js"
 import {
   collection,
   getDocs,
@@ -26,26 +27,30 @@ function formatProductDocument(productDoc) {
 }
 
 // Método para obtener todos los productos
-export async function getAllProducts() {
+//export async function getAllProducts() {
+export const getAllProducts = async () => {
   const querySnapshot = await getDocs(productsCollection);
+
   const products = [];
   querySnapshot.forEach((doc) => {
     products.push(formatProductDocument(doc));
   });
+
   return products;
-}
+};
 
 // Método para buscar un producto por su ID
-export async function getProductById(id) {
+export const getProductById = async (id) => {
   const productDoc = await getDoc(doc(productsCollection, id));
+
   if (productDoc.exists()) {
     return formatProductDocument(productDoc);
   } else {
     return null;
   }
-}
+};
 
-export async function getProductBySku(sku) {
+export const getProductBySku = async (sku) => {
   const skuQuery = query(productsCollection, where("sku", "==", sku));
   const querySnapshot = await getDocs(skuQuery);
 
@@ -55,10 +60,10 @@ export async function getProductBySku(sku) {
 
   const productDoc = querySnapshot.docs[0];
   return formatProductDocument(productDoc);
-}
+};
 
 // Método para generar el siguiente SKU correlativo en Firestore
-export async function getNextSku() {
+export const getNextSku = async () => {
   const querySnapshot = await getDocs(productsCollection);
   let maxSkuNumber = 0;
 
@@ -71,26 +76,19 @@ export async function getNextSku() {
   });
 
   return `PROD${String(maxSkuNumber + 1).padStart(4, "0")}`;
-}
+};
 
 // Método para guardar un producto en Firestore
-export async function createProducts(product) {
+export const createProducts = async (product) => {
   const productToSave = { ...product };
 
-  /* if (
-    !productToSave.sku ||
-    typeof productToSave.sku !== "string" ||
-    productToSave.sku.trim() === ""
-  ) {
-    productToSave.sku = await getNextSku();
-  } */
   productToSave.sku = await getNextSku();
 
   const docRef = await addDoc(productsCollection, productToSave);
   return { id: docRef.id, ...productToSave };
-}
+};
 
 // Método para eliminar un producto por su ID
-export async function deleteProducts(id) {
+export const deleteProducts = async (id) => {
   await deleteDoc(doc(productsCollection, id));
 }
