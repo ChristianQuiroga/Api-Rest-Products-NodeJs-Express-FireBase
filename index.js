@@ -4,12 +4,14 @@ import cors from "cors";
 import dotenv from "dotenv"; // Cargar variables de entorno desde el archivo .env
 
 import productsRouter from "./src/routers/products.router.js"; // Importar el controlador de productos
+import authRouter from "./src/routers/auth.router.js"; // Importar el controlador de auth
 
 dotenv.config(); // Cargar las variables de entorno
 
 const app = express(); // Crear una instancia de Express
 
 app.use(cors()); // Middleware para habilitar CORS en todas las rutas desde Frontend
+app.use(express.json());
 //app.use(bodyParser.json()); // Middleware global para parsear JSON en las solicitudes
 
 // Ruta de ejemplo para la página de inicio
@@ -156,7 +158,8 @@ app.get("/", (req, res) => {
   `);
 });
 
-// Prefijo para las rutas de productos
+// Prefijo para las rutas de productos, login
+app.use("/api/auth", authRouter);
 app.use("/api/products", productsRouter);
 
 // Middleware para manejar rutas no encontradas
