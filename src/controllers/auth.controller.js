@@ -7,7 +7,7 @@ const defaultUser = {
 };
 
 export const login = (req, res) => {
-  const { email, password } = req.body ?? {}; // no romper el server si esta indefinido usar ?? {}
+  const { email, password } = req.body ?? {}; // no romper el server si esta indefinido usar ?? {}, deconstruir el objeto.
 
   //Verificar credenciales del usuario
   if (!email || !password) {

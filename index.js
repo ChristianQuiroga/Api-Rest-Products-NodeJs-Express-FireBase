@@ -5,7 +5,7 @@ import dotenv from "dotenv"; // Cargar variables de entorno desde el archivo .en
 
 import productsRouter from "./src/routers/products.router.js"; // Importar el controlador de productos
 import authRouter from "./src/routers/auth.router.js"; // Importar el controlador de auth
-import { getHome } from "./src/controllers/home.controller.js";
+import { getHome } from "./src/controllers/home.controller.js"; //exportación nombrada va entre {}
 
 dotenv.config(); // Cargar las variables de entorno
 

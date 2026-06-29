@@ -1,5 +1,5 @@
 //import { db } from "./data/data.js";
-import { db } from "../config/firebase.js"
+import { db } from "../config/firebase.js";
 import {
   collection,
   getDocs,
@@ -9,6 +9,8 @@ import {
   doc,
   query,
   where,
+  updateDoc,
+  setDoc,
 } from "firebase/firestore";
 
 const productsCollection = collection(db, "Products");
@@ -88,7 +90,25 @@ export const createProducts = async (product) => {
   return { id: docRef.id, ...productToSave };
 };
 
+// Método para actualizar un producto en Firestore
+export const updateProducts = async (id, product) => {
+  const productRef = doc(productsCollection, id);
+  const snapshot = await getDoc(productRef);
+
+  if (!snapshot.exists()) {
+    return null;
+    // throw new Error("El producto no existe");
+  }
+
+  await updateDoc(productRef, product);
+
+  return {
+    id: productRef.id,
+    ...product,
+  };
+};
+
 // Método para eliminar un producto por su ID
 export const deleteProducts = async (id) => {
   await deleteDoc(doc(productsCollection, id));
-}
+};
