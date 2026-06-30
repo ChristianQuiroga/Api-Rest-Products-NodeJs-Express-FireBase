@@ -249,13 +249,21 @@ export const homeHtml = `
               <span class="method get">GET</span>
               <span class="path">/api/products/sku/:idsku</span>
             </div>
-            <span class="protected">Requiere token</span>
+            <span class="public">Público</span>
           </div>
 
           <div class="route">
             <div class="route-content">
               <span class="method post">POST</span>
               <span class="path">/api/products/create</span>
+            </div>
+            <span class="protected">Requiere token</span>
+          </div>
+
+          <div class="route">
+            <div class="route-content">
+              <span class="method post">PUT</span>
+              <span class="path">/api/products/update</span>
             </div>
             <span class="protected">Requiere token</span>
           </div>
