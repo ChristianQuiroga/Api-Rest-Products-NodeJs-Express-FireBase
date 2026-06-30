@@ -142,13 +142,50 @@ export const createProducts = async (req, res) => {
     };
 
     const savedProduct = await productsModel.createProducts(sanitizedProduct);
-    res
-      .status(201)
-      .json({ message: "Producto guardado correctamente", data: savedProduct });
+    res.status(201).json({
+      message: "Producto guardado correctamente",
+      data: savedProduct,
+    });
   } catch (error) {
     console.error("Error en createProducts:", error.message);
     res
       .status(error.status || 500)
       .json({ message: error.message || "Error al guardar el producto" });
+  }
+};
+
+export const updateProducts = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, price, category, description, stock } = req.body;
+
+    if (!id) {
+      return res
+        .status(400)
+        .json({ message: "El ID del producto es obligatorio" });
+    }
+
+    if (!name || !price || !category || !description || !stock) {
+      return res.status(422).json({ message: "Faltan datos obligatorios" });
+    }
+
+    const updatedProducts = await productsModel.updateProducts(id, {
+      name,
+      price,
+      category,
+      description,
+      stock,
+    });
+
+    if (!updatedProducts) {
+      return res.status(404).json({ message: "Producto no encontrado" });
+    }
+
+    res.json(updatedProducts);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error interno al actualizar el producto",
+      error: error.message,
+    });
   }
 };
