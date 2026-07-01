@@ -1,86 +1,109 @@
 # API REST de Productos - Node.js + Express + Firebase
 
-API REST profesional para gestión de productos construida con **Node.js**, **Express** y **Firebase Firestore**. Proporciona operaciones CRUD, autenticación JWT y almacenamiento en Firestore.
+API REST para la gestión de productos desarrollada con Node.js, Express y Firebase Firestore. El proyecto expone operaciones CRUD, autenticación básica mediante JWT y almacenamiento persistente de productos en una base de datos NoSQL.
 
-## 📋 Características
+## ✨ Descripción general
 
-- CRUD de productos con Firestore
-- Obtención por ID y por SKU
-- Generación automática de SKU correlativo
-- Validaciones de entrada en backend
-- Autenticación con JWT
-- Rutas públicas y protegidas
-- CORS habilitado
-- Estructura modular y escalable
+Esta API permite:
 
-## 🏗️ Arquitectura del proyecto
+- Crear, listar, consultar, actualizar y eliminar productos.
+- Consultar productos por ID o por SKU.
+- Generar automáticamente un SKU correlativo en formato PROD####.
+- Proteger ciertos endpoints mediante autenticación JWT.
+- Ejecutarse localmente y también desplegarse en servicios como Vercel.
 
-La aplicación está organizada en capas para separar responsabilidades:
+## ✅ Características principales
 
-- `index.js` — servidor, middleware y rutas principales
-- `src/routers/` — definición de rutas HTTP
-- `src/controllers/` — lógica de controladores
-- `src/models/` — acceso a datos con Firebase Firestore
-- `src/config/` — configuración de Firebase
-- `src/middlewares/` — validación de token JWT
-- `src/utils/` — utilidades como el generador de tokens
-- `src/views/` — vista HTML de la ruta principal
+- CRUD completo de productos.
+- Almacenamiento en Firebase Firestore.
+- Búsqueda por ID y por SKU.
+- Generación automática de SKU.
+- Validaciones básicas en el backend.
+- Autenticación con JWT.
+- Soporte para CORS.
+- Estructura modular para facilitar el mantenimiento.
+
+## 🛠️ Tecnologías utilizadas
+
+- Node.js
+- Express.js
+- Firebase Firestore
+- JSON Web Token (jsonwebtoken)
+- dotenv
+- CORS
+- Jest + Supertest para pruebas
 
 ## 📁 Estructura del proyecto
 
-```
+```text
 Api-Rest-Products-NodeJs-Express-FireBase/
-├── .env
-├── .env-example
+├── app.js
 ├── index.js
 ├── package.json
 ├── package-lock.json
 ├── README.md
 ├── vercel.json
-└── src/
-    ├── config/
-    │   └── firebase.js
-    ├── controllers/
-    │   ├── auth.controller.js
-    │   ├── home.controller.js
-    │   └── products.controller.js
-    ├── middlewares/
-    │   └── authentication.js
-    ├── models/
-    │   └── products.model.js
-    ├── routers/
-    │   ├── auth.router.js
-    │   └── products.router.js
-    ├── utils/
-    │   └── token-generator.js
-    └── views/
-        └── home.view.js
+├── .env-example
+├── .gitignore
+├── src/
+│   ├── config/
+│   │   └── firebase.js
+│   ├── controllers/
+│   │   ├── auth.controller.js
+│   │   ├── home.controller.js
+│   │   └── products.controller.js
+│   ├── middlewares/
+│   │   └── authentication.js
+│   ├── models/
+│   │   └── products.model.js
+│   ├── routers/
+│   │   ├── auth.router.js
+│   │   └── products.router.js
+│   ├── utils/
+│   │   └── token-generator.js
+│   └── views/
+│       └── home.view.js
+└── _tests_/
+    ├── app.test.js
+    ├── auth.test.js
+    └── products.test.js
 ```
 
-## 🚀 Instalación
+## 📋 Requisitos previos
 
-### Requisitos previos
+Antes de ejecutar el proyecto, asegúrate de tener instalado:
 
-- Node.js v16 o superior
-- npm o yarn
-- Cuenta de Firebase con Firestore habilitado
-- Credenciales de Firebase
+- Node.js 18 o superior
+- npm
+- Una cuenta de Firebase con Firestore habilitado
+- Las credenciales del proyecto Firebase
 
-### Pasos
+## ⚙️ Instalación
+
+1. Clona el repositorio:
 
 ```bash
 git clone <URL_DEL_REPO>
 cd Api-Rest-Products-NodeJs-Express-FireBase
+```
+
+2. Instala las dependencias:
+
+```bash
 npm install
 ```
 
-### Configurar variables de entorno
+3. Crea un archivo .env a partir del ejemplo:
 
-Copia `.env-example` a `.env` y completa los valores:
+```bash
+cp .env-example .env
+```
+
+4. Completa las variables de entorno en .env:
 
 ```env
 PORT=3000
-FIREBASE_API_KEY=tu_api_key_aqui
+FIREBASE_API_KEY=tu_api_key
 FIREBASE_AUTH_DOMAIN=tu_proyecto.firebaseapp.com
 FIREBASE_PROJECT_ID=tu_proyecto_id
 FIREBASE_STORAGE_BUCKET=tu_proyecto.appspot.com
@@ -89,19 +112,42 @@ FIREBASE_APP_ID=tu_app_id
 JWT_SECRET_KEY=tu_clave_secreta
 ```
 
-### Ejecutar la aplicación
+## ▶️ Ejecución
+
+Inicia el servidor en modo producción:
 
 ```bash
 npm start
 ```
 
-Modo desarrollo:
+O en modo desarrollo:
 
 ```bash
 npm run dev
 ```
 
-El servidor estará disponible en `http://localhost:3000`.
+La API quedará disponible en:
+
+```text
+http://localhost:3000
+```
+
+## 🔐 Autenticación
+
+El proyecto incluye un endpoint de login que devuelve un token JWT. Para acceder a los endpoints protegidos, debes enviar el token en el encabezado Authorization:
+
+```http
+Authorization: Bearer <jwt_token>
+```
+
+### Credenciales de demostración
+
+```json
+{
+  "email": "user@email.com",
+  "password": "strongPass123"
+}
+```
 
 ## 📡 Endpoints disponibles
 
@@ -111,10 +157,7 @@ El servidor estará disponible en `http://localhost:3000`.
 GET /
 ```
 
-- Devuelve HTML con información del proyecto.
-- Público.
-
----
+Respuesta: HTML de bienvenida del proyecto.
 
 ### 2. Login
 
@@ -123,7 +166,7 @@ POST /api/auth/login
 Content-Type: application/json
 ```
 
-**Body:**
+Body:
 
 ```json
 {
@@ -132,7 +175,7 @@ Content-Type: application/json
 }
 ```
 
-**Respuesta:**
+Respuesta:
 
 ```json
 {
@@ -140,18 +183,13 @@ Content-Type: application/json
 }
 ```
 
-- Usuario estático definido en `src/controllers/auth.controller.js`.
-- Token válido por 1 hora.
-
----
-
 ### 3. Obtener todos los productos
 
 ```http
 GET /api/products
 ```
 
-**Respuesta (200):**
+Respuesta:
 
 ```json
 [
@@ -167,27 +205,15 @@ GET /api/products
 ]
 ```
 
-- Ruta pública.
-
----
-
 ### 4. Obtener producto por ID
 
 ```http
 GET /api/products/:id
 ```
 
-**Parámetros:**
+Parámetros:
 
-- `id` (string) — ID del documento en Firestore.
-
-**Respuestas:**
-
-- `200` → producto encontrado.
-- `400` → ID no válido.
-- `404` → producto no encontrado.
-
----
+- id: ID del documento en Firestore.
 
 ### 5. Obtener producto por SKU
 
@@ -195,29 +221,19 @@ GET /api/products/:id
 GET /api/products/sku/:idSku
 ```
 
-**Parámetros:**
+Parámetros:
 
-- `idSku` (string) — SKU del producto, ejemplo `PROD0001`.
-
-**Respuestas:**
-
-- `200` → producto encontrado.
-- `400` → SKU no válido.
-- `404` → producto no encontrado.
-
-**Requiere token JWT**.
-
----
+- idSku: SKU del producto, por ejemplo PROD0001.
 
 ### 6. Crear producto
 
 ```http
 POST /api/products/create
-Content-Type: application/json
 Authorization: Bearer <jwt_token>
+Content-Type: application/json
 ```
 
-**Body mínimo:**
+Body mínimo:
 
 ```json
 {
@@ -229,176 +245,117 @@ Authorization: Bearer <jwt_token>
 }
 ```
 
-**Notas:**
-
-- Campos requeridos: `name`, `price`, `category`.
-- Campos opcionales: `description`, `stock`.
-- El SKU se genera automáticamente en formato `PROD0001`, `PROD0002`, etc.
-
-**Respuesta (201):**
+Respuesta esperada:
 
 ```json
 {
   "message": "Producto guardado correctamente",
-  "data": {
-    "id": "doc-id",
-    "name": "Mouse Logitech",
-    "price": 45.99,
-    "category": "Accesorios",
-    "description": "Mouse inalámbrico de precisión",
-    "stock": 20,
-    "sku": "PROD0002"
-  }
+  "id": "doc-id",
+  "name": "Mouse Logitech",
+  "price": 45.99,
+  "category": "Accesorios",
+  "description": "Mouse inalámbrico de precisión",
+  "stock": 20,
+  "sku": "PROD0002"
 }
 ```
 
-**Errores:**
+### 7. Actualizar producto
 
-- `400` → datos inválidos o campos faltantes.
-- `500` → error interno del servidor.
+```http
+PUT /api/products/update/:id
+Authorization: Bearer <jwt_token>
+Content-Type: application/json
+```
 
----
+Body ejemplo:
 
-### 7. Eliminar producto
+```json
+{
+  "name": "Producto actualizado",
+  "price": 99.99,
+  "category": "Tecnología",
+  "description": "Descripción nueva",
+  "stock": 10
+}
+```
+
+### 8. Eliminar producto
 
 ```http
 DELETE /api/products/:id
 Authorization: Bearer <jwt_token>
 ```
 
-**Parámetros:**
+## 🧱 Modelo de datos
 
-- `id` (string) — ID del documento en Firestore.
-
-**Respuesta (200):**
+La colección principal se llama Products y cada documento contiene:
 
 ```json
 {
-  "message": "Producto eliminado correctamente"
+  "id": "string",
+  "name": "string",
+  "price": "number",
+  "category": "string",
+  "description": "string",
+  "stock": "number",
+  "sku": "string"
 }
 ```
 
-**Errores:**
+### Reglas de negocio básicas
 
-- `400` → ID no válido.
-- `404` → producto no encontrado.
+- name: obligatorio y no vacío.
+- price: obligatorio, debe ser mayor a 0.
+- category: obligatorio y no vacío.
+- stock: si no se envía, se toma como 0.
+- description: si no se envía, se toma como cadena vacía.
+- sku: se genera automáticamente.
 
-## 🔒 Endpoints protegidos
+## 🧪 Pruebas
 
-Los siguientes endpoints requieren encabezado:
-
-```http
-Authorization: Bearer <jwt_token>
-```
-
-- `GET /api/products/sku/:idSku`
-- `POST /api/products/create`
-- `DELETE /api/products/:id`
-
-## 📦 Dependencias
-
-Dependencias definidas en `package.json`:
-
-- `express` — framework HTTP.
-- `cors` — habilita CORS.
-- `dotenv` — carga variables de entorno.
-- `firebase` — cliente Firebase para Firestore.
-- `jsonwebtoken` — generación y validación de JWT.
-- `body-parser` — parseo JSON (aunque `express.json()` es la opción activa en el código).
-
-## 🧩 Archivos clave agregados
-
-- `index.js` — punto de entrada del servidor.
-- `src/config/firebase.js` — configuración de Firebase Firestore.
-- `src/routers/auth.router.js` — rutas de autenticación.
-- `src/routers/products.router.js` — rutas de productos.
-- `src/controllers/auth.controller.js` — lógica de login.
-- `src/controllers/products.controller.js` — validaciones y controladores de producto.
-- `src/controllers/home.controller.js` — ruta `/` de bienvenida.
-- `src/models/products.model.js` — acceso y operaciones en Firestore.
-- `src/middlewares/authentication.js` — middleware JWT.
-- `src/utils/token-generator.js` — generación de token JWT.
-- `src/views/home.view.js` — vista HTML de la ruta principal.
-- `.env-example` — plantilla de variables de entorno.
-- `vercel.json` — configuración de despliegue.
-
-## 💡 Notas importantes
-
-- La aplicación usa `type: module` en `package.json`.
-- El token JWT se verifica en `src/middlewares/authentication.js`.
-- No existe endpoint de actualización (`PUT`/`PATCH`) en la versión actual.
-
-## 📌 Ejemplo rápido
-
-1. Obtener token:
+Para ejecutar las pruebas del proyecto:
 
 ```bash
-curl -X POST http://localhost:3000/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"user@email.com","password":"strongPass123"}'
+npm test
 ```
 
-2. Crear producto:
+El proyecto cuenta con pruebas básicas para la ruta principal, autenticación y CRUD de productos.
 
-```bash
-curl -X POST http://localhost:3000/api/products/create \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer <jwt_token>" \
-  -d '{"name":"Teclado","price":59.99,"category":"Accesorios","description":"Teclado mecánico","stock":15}'
-```
+## 🚀 Despliegue
 
----
+El proyecto incluye un archivo de configuración para Vercel.
 
-Si necesitas, puedo también agregar ejemplos de request con Postman o Insomnia.
+### Despliegue en Vercel
 
-- **name**: Debe ser un texto no vacío
-- **price**: Debe ser un número mayor a 0
-- **category**: Debe ser un texto no vacío
-- **stock**: Número entero (default: 0)
-- **description**: Texto (default: vacío)
+1. Sube el proyecto a GitHub.
+2. Crea un nuevo proyecto en Vercel.
+3. Conecta el repositorio.
+4. Define las variables de entorno en Vercel con los mismos nombres que en .env.
+5. Despliega.
 
-### Sanitización
+### Variables de entorno necesarias en producción
 
-- Todos los textos se trimean (espacios al inicio/final se eliminan)
-- `price` se convierte a número decimal
-- `stock` se convierte a número entero
+- FIREBASE_API_KEY
+- FIREBASE_AUTH_DOMAIN
+- FIREBASE_PROJECT_ID
+- FIREBASE_STORAGE_BUCKET
+- FIREBASE_MESSAGING_SENDER_ID
+- FIREBASE_APP_ID
+- JWT_SECRET_KEY
 
-## 🔐 Consideraciones de Seguridad
+## 🔒 Notas importantes
 
-- Implementar autenticación JWT antes de producción
-- Validar permisos de usuario en cada endpoint
-- Usar Firebase Security Rules para controlar acceso a datos
-- No versionear `.env` (incluido en `.gitignore`)
-- Implementar rate limiting en producción
-- Usar HTTPS en producción
+- No subas el archivo .env a GitHub.
+- El proyecto usa un usuario de prueba para autenticación local.
+- Para producción, lo ideal es reemplazar la autenticación demo por un sistema de usuarios real y definir reglas de seguridad en Firestore.
+- El archivo .gitignore ya excluye node_modules, archivos de VS Code y el archivo .env.
 
-## 🛠️ Tecnologías Utilizadas
+## 📌 Resumen
 
-| Tecnología       | Versión  | Propósito               |
-| ---------------- | -------- | ----------------------- |
-| **Node.js**      | v16+     | Runtime de JavaScript   |
-| **Express**      | ^5.2.1   | Framework web           |
-| **Firebase**     | ^12.14.0 | Base de datos Firestore |
-| **body-parser**  | ^2.2.2   | Parser de JSON          |
-| **cors**         | ^2.8.6   | Manejo de CORS          |
-| **dotenv**       | ^17.4.2  | Variables de entorno    |
-| **jsonwebtoken** | ^9.0.3   | Autenticación JWT       |
+Este proyecto demuestra una arquitectura simple pero funcional para construir una API REST con Node.js, Express y Firebase, ideal para practicar CRUD, autenticación JWT, validaciones y despliegue básico.
 
-## 📊 Modelo de Datos
-
-### Colección: `Products`
-
-```javascript
-{
-  id: string,           // Generado automáticamente por Firestore
-  name: string,         // Nombre del producto (requerido)
-  price: number,        // Precio (requerido, > 0)
-  category: string,     // Categoría (requerido)
-  description: string,  // Descripción (opcional, default: "")
-  stock: number,        // Cantidad en inventario (opcional, default: 0)
-  sku: string          // SKU único PROD#### (auto-generado)
-}
-```
+````
 
 ## 🔄 Generación de SKU Correlativo
 
@@ -426,7 +383,7 @@ export async function getNextSku() {
   // 3. Generar nuevo SKU con siguiente número
   return `PROD${String(maxSkuNumber + 1).padStart(4, "0")}`;
 }
-```
+````
 
 ### Características
 

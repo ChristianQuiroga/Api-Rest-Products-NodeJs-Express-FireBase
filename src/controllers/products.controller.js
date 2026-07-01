@@ -144,7 +144,8 @@ export const createProducts = async (req, res) => {
     const savedProduct = await productsModel.createProducts(sanitizedProduct);
     res.status(201).json({
       message: "Producto guardado correctamente",
-      data: savedProduct,
+      //data: savedProduct,
+      ...savedProduct,
     });
   } catch (error) {
     console.error("Error en createProducts:", error.message);
@@ -157,12 +158,21 @@ export const createProducts = async (req, res) => {
 export const updateProducts = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, price, category, description, stock } = req.body;
+    const { name, price, category, description, stock, sku } = req.body;
 
     if (!id) {
       return res
         .status(400)
         .json({ message: "El ID del producto es obligatorio" });
+    }
+
+    if (sku) {
+      return res
+        .status(400)
+        .json({
+          message:
+            "No se puede actualizar el SKU del producto, elimínelo del cuerpo de la solicitud",
+        });
     }
 
     if (!name || !price || !category || !description || !stock) {
