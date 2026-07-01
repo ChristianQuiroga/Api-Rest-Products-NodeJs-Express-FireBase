@@ -91,6 +91,19 @@ describe("CRUD /api/products", () => {
     expect(response.body.description).toBe("Category Description");
   });
 
+  test("PUT /api/products/:id debe permitir actualizaciones parciales", async () => {
+    const response = await request(app)
+      .put(`/api/products/update/${productId}`)
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        name: "Producto parcialmente actualizado",
+      });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body.id).toBe(productId);
+    expect(response.body.name).toBe("Producto parcialmente actualizado");
+  });
+
   // este Par test delete van juntos, primero eliminamos el producto y luego verificamos que ya no existe
   test("DELETE /api/products/:id debe eliminar el producto creado", async () => {
     const response = await request(app)

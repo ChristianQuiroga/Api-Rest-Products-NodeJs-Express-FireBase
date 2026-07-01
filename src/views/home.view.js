@@ -113,6 +113,10 @@ export const homeHtml = `
           background-color: #137333;
         }
 
+        .put {
+          background-color: #b45309;
+        }
+
         .delete {
           background-color: #b3261e;
         }
@@ -262,8 +266,8 @@ export const homeHtml = `
 
           <div class="route">
             <div class="route-content">
-              <span class="method post">PUT</span>
-              <span class="path">/api/products/update</span>
+              <span class="method put">PUT</span>
+              <span class="path">/api/products/update/:id</span>
             </div>
             <span class="protected">Requiere token</span>
           </div>
