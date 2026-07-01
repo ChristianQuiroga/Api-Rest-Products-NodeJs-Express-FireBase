@@ -15,6 +15,18 @@ app.use(cors()); // Middleware para habilitar CORS en todas las rutas desde Fron
 app.use(express.json());
 //app.use(bodyParser.json()); // Middleware global para parsear JSON en las solicitudes
 
+// Middleware para manejar errores de sintaxis en JSON
+app.use((error, req, res, next) => {
+  if (error instanceof SyntaxError && error.status === 400 && "body" in error) {
+    return res.status(400).json({
+      message:
+        "El JSON enviado no tiene un formato válido. Revisa comas, llaves o comillas.",
+    });
+  }
+
+  next(error);
+});
+
 // Ruta de ejemplo para la página de inicio
 app.get("/", getHome);
 
