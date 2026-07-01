@@ -158,7 +158,7 @@ export const createProducts = async (req, res) => {
 export const updateProducts = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, price, category, description, stock, sku } = req.body;
+    const { name, price, category, description, stock, sku } = req.body ?? {};
 
     if (!id) {
       return res
@@ -166,26 +166,64 @@ export const updateProducts = async (req, res) => {
         .json({ message: "El ID del producto es obligatorio" });
     }
 
-    if (sku) {
+    if (sku !== undefined) {
+      return res.status(400).json({
+        message:
+          "No se puede actualizar el SKU del producto, elimínelo del cuerpo de la solicitud",
+      });
+    }
+
+    const updates = {};
+
+    if (name !== undefined) {
+      if (typeof name !== "string" || name.trim() === "") {
+        return res
+          .status(400)
+          .json({ message: "El nombre debe ser un texto válido" });
+      }
+      updates.name = name.trim();
+    }
+
+    if (price !== undefined) {
+      if (typeof price !== "number" || price <= 0) {
+        return res
+          .status(400)
+          .json({ message: "El precio debe ser un número mayor a 0" });
+      }
+      updates.price = parseFloat(price);
+    }
+
+    if (category !== undefined) {
+      if (typeof category !== "string" || category.trim() === "") {
+        return res
+          .status(400)
+          .json({ message: "La categoría debe ser un texto válido" });
+      }
+      updates.category = category.trim();
+    }
+
+    if (description !== undefined) {
+      updates.description =
+        typeof description === "string" ? description.trim() : "";
+    }
+
+    if (stock !== undefined) {
+      const parsedStock = Number.parseInt(stock, 10);
+      if (Number.isNaN(parsedStock) || parsedStock < 0) {
+        return res
+          .status(400)
+          .json({ message: "El stock debe ser un número mayor o igual a 0" });
+      }
+      updates.stock = parsedStock;
+    }
+
+    if (Object.keys(updates).length === 0) {
       return res
         .status(400)
-        .json({
-          message:
-            "No se puede actualizar el SKU del producto, elimínelo del cuerpo de la solicitud",
-        });
+        .json({ message: "No se enviaron campos para actualizar" });
     }
 
-    if (!name || !price || !category || !description || !stock) {
-      return res.status(422).json({ message: "Faltan datos obligatorios" });
-    }
-
-    const updatedProducts = await productsModel.updateProducts(id, {
-      name,
-      price,
-      category,
-      description,
-      stock,
-    });
+    const updatedProducts = await productsModel.updateProducts(id, updates);
 
     if (!updatedProducts) {
       return res.status(404).json({ message: "Producto no encontrado" });
@@ -193,6 +231,7 @@ export const updateProducts = async (req, res) => {
 
     res.json(updatedProducts);
   } catch (error) {
+    console.error("Error en updateProducts:", error.message);
     return res.status(500).json({
       message: "Error interno al actualizar el producto",
       error: error.message,

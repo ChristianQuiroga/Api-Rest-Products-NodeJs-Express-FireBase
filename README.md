@@ -20,6 +20,7 @@ Esta API permite:
 - Generación automática de SKU.
 - Validaciones básicas en el backend.
 - Autenticación con JWT.
+- Actualizaciones parciales de productos.
 - Soporte para CORS.
 - Estructura modular para facilitar el mantenimiento.
 
@@ -245,6 +246,15 @@ Body mínimo:
 }
 ```
 
+Reglas aplicadas:
+
+- name: obligatorio y debe ser texto no vacío.
+- price: obligatorio, debe ser un número mayor a 0.
+- category: obligatorio y debe ser texto no vacío.
+- description: si no se envía, se guarda como cadena vacía.
+- stock: si no se envía, se guarda como 0.
+- sku: se genera automáticamente.
+
 Respuesta esperada:
 
 ```json
@@ -268,7 +278,9 @@ Authorization: Bearer <jwt_token>
 Content-Type: application/json
 ```
 
-Body ejemplo:
+La actualización admite campos parciales. Solo se modifican los atributos enviados en el body.
+
+Body ejemplo (parcial o completo):
 
 ```json
 {
@@ -280,11 +292,25 @@ Body ejemplo:
 }
 ```
 
+Notas importantes:
+
+- Si no se envía ningún campo válido para actualizar, la API responde con estado 400.
+- El campo sku no se puede modificar mediante esta ruta; si se envía, la API responde con 400.
+- Si el producto no existe, la respuesta es 404.
+
 ### 8. Eliminar producto
 
 ```http
 DELETE /api/products/:id
 Authorization: Bearer <jwt_token>
+```
+
+Respuesta esperada:
+
+```json
+{
+  "message": "Producto eliminado correctamente"
+}
 ```
 
 ## 🧱 Modelo de datos
@@ -310,7 +336,17 @@ La colección principal se llama Products y cada documento contiene:
 - category: obligatorio y no vacío.
 - stock: si no se envía, se toma como 0.
 - description: si no se envía, se toma como cadena vacía.
-- sku: se genera automáticamente.
+- sku: se genera automáticamente y no es editable desde la actualización.
+
+### Estados HTTP esperados
+
+- 200: operación exitosa.
+- 201: producto creado correctamente.
+- 400: datos inválidos o solicitud mal formada.
+- 401: token faltante o inválido.
+- 403: token inválido o expirado.
+- 404: producto no encontrado.
+- 500: error interno del servidor.
 
 ## 🧪 Pruebas
 
